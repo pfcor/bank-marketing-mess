@@ -22,12 +22,12 @@ from pyspark.sql import SparkSession
 # spark = SparkContext(conf=conf)
 
 
-spark = SparkSession.builder.appName("SparkSessionZipsExample").getOrCreate()
+spark = SparkSession.builder.appName("BANK_MODELO").getOrCreate()
 
 # Lendo os dados do HDFS
 
 data = spark.read.csv(
-    "hdfs://elephant:8020/user/labdata/bank_small.csv",
+    "hdfs://elephant:8020/user/labdata/bank.csv",
     header=True,
     sep=";",
     inferSchema=True
@@ -107,6 +107,16 @@ assembler = VectorAssembler(inputCols=assembler_inputs, outputCol="features")
 
 stages += [assembler]
 
+# Pipeline
+pipeline = Pipeline(stages=stages)
+pipelineModel = pipeline.fit(data)
+pipelineModel.write().overwrite().save("data_precossing_bank_mkt")
+
+# prepare to train
+data_model = pipelineModel.transform(data)
+data_model = data_model.select(["label", "features"])
+# data_model.createOrReplaceTempView("data_model") 
+# data_model.coalesce(1).write.mode('overwrite').csv("hdfs://elephant:8020/user/labdata/demand_models_stats.csv", header=True)
 
 # Modelo - GBTClassifier
 
@@ -119,13 +129,9 @@ gbt = GBTClassifier(
     maxIter=60,
     seed=420
 )
-stages += [gbt]
 
-
-# Pipeline
-pipeline = Pipeline(stages=stages)
-pipeline.fit(data)
-pipeline.write().overwrite().save("modelo_bank_mkt")
+gbtModel = gbt.fit(data_model)
+gbtModel.write().overwrite().save("modelo_bank_mkt")
 
 # gbt = GBTClassifier(
 #     labelCol="label",
