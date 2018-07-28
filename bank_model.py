@@ -27,7 +27,7 @@ spark = SparkSession.builder.appName("SparkSessionZipsExample").getOrCreate()
 # Lendo os dados do HDFS
 
 data = spark.read.csv(
-    "hdfs://elephant:8020/user/labdata/bank.csv",
+    "hdfs://elephant:8020/user/labdata/bank_small.csv",
     header=True,
     sep=";",
     inferSchema=True
@@ -125,7 +125,7 @@ stages += [gbt]
 # Pipeline
 pipeline = Pipeline(stages=stages)
 pipeline.fit(data)
-pipeline.save("modelo_bank_mkt")
+pipeline.write().overwrite().save("modelo_bank_mkt")
 
 # gbt = GBTClassifier(
 #     labelCol="label",
