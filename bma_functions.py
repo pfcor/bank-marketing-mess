@@ -24,8 +24,8 @@ def print_cardinalities(data_cat, n_target=1):
 
 # plots
 def plot_target(data, **kwargs):
-    fig, ax = plt.subplots(figsize=(4,4))
-    ax = sns.countplot(x="y", data=data, ax=ax, color=cp[0]);
+    fig, ax = plt.subplots(figsize=(8,8))
+    ax = sns.countplot(x="y", data=data, ax=ax, color=cp[0])
 
     ax.set_title("'Has the client\nsubscribed a term deposit?'", size=16)
     ax.set_xlabel('')
@@ -75,4 +75,12 @@ def plot_cat_prevalence(data_cat, cat_feature, **kwargs):
         ax.get_figure().savefig(kwargs.get('saveto', f'plots/02_{cat_feature}.png'), bbox_inches='tight')
 
     return ax
+
+def plot_cats_prevalence(data_cat, target=['y', 'y_numeric'], **kwargs):
+    plots = []
+    for cat_feature in data_cat.drop(target, axis=1).columns:
+        if cat_feature not in ('month', 'day_of_week'): # temporal data requires different approach
+            ax = plot_cat_prevalence(data_cat, cat_feature, savefig=kwargs.get('savefig', False))
+            plots.append(ax)
+    return plots
 
