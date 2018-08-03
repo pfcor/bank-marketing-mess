@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.StringIndexerModel","timestamp":1533271540211,"sparkVersion":"2.1.0","uid":"StringIndexer_49c69f3fc659de471987","paramMap":{"handleInvalid":"error","inputCol":"housing","outputCol":"housing_index"}}

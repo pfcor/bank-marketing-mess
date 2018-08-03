@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.StringIndexer","timestamp":1533276409562,"sparkVersion":"2.1.0","uid":"StringIndexer_4bc48aa5387b6d828513","paramMap":{"inputCol":"month","outputCol":"month_index","handleInvalid":"error"}}

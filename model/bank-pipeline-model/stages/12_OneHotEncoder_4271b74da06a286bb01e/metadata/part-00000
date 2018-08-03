@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.OneHotEncoder","timestamp":1533276508881,"sparkVersion":"2.1.0","uid":"OneHotEncoder_4271b74da06a286bb01e","paramMap":{"dropLast":true,"outputCol":"loan_class_vec","inputCol":"loan_index"}}
