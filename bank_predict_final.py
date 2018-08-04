@@ -8,10 +8,6 @@
 # 
 # 
 
-# finding spark
-#import findspark
-#findspark.init('/home/pfcor/spark-2.1.0-bin-hadoop2.7')
-
 # misc
 import datetime as dt
 timestamp = dt.datetime.strftime(dt.datetime.now(), '%Y-%m-%d')
@@ -24,15 +20,8 @@ spark = SparkSession.builder.appName("BANK_MODELO").getOrCreate()
 # carregando modelo
 from pyspark.ml import PipelineModel
 pipelineModel = PipelineModel.load('hdfs://elephant:8020/user/labdata/model/bank-pipeline-model-res/')
-#pipelineModel = PipelineModel.load('model/bank-pipeline-model-res/')
 
 # carregando dados
-#data = spark.read.csv(
-#    'data/new-data.csv',
-#    sep=';',
-#    header=True,
-#    inferSchema=True
-#)
 data = spark.read.csv(
     "hdfs://elephant:8020/user/labdata/new-data.csv",
     header=True,
@@ -44,10 +33,9 @@ data = data.selectExpr(*["`{}` as {}".format(col, col.replace('.', '_')) for col
 # fazendo as predições
 predictions = pipelineModel.transform(data)
 
-
 # salvando predições
-#predictions.select('label', 'prediction', predictions['features'].cast('string')).write.csv('/home/pfcor/bank-marketing/predictions/{}/predictions'.format(timestamp))
-predictions.select('label', 'prediction', predictions['features'].cast('string'), predictions['probability'].cast('string')).write.csv('hdfs://elephant:8020/user/labdata/predictions/{}/predictions'.format(timestamp))
+predictions.select('label', 'prediction', predictions['features'].cast('string')).write.csv('hdfs://elephant:8020/user/labdata/predictions/{}/predictions'.format(timestamp))
+# salvando metricas
 predictions.select('label', 'prediction').createOrReplaceTempView('predictions')
 spark.sql("""
 SELECT
